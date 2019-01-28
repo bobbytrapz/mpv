@@ -10,6 +10,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -235,9 +236,31 @@ func (c *Client) Execute(name string, params ...interface{}) (chan Reply, error)
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("{\"command\":[\"%s\"", name))
 	for _, param := range params {
-		fmt.Fprintf(&sb, ",\"%s\"", param)
+		var p string
+		switch v := param.(type) {
+		case time.Time:
+			p = v.String()
+		case time.Duration:
+			p = strconv.FormatInt(int64(v/time.Millisecond), 10)
+		case int:
+			p = strconv.Itoa(v)
+		case int64:
+			p = strconv.FormatInt(v, 10)
+		case float32:
+			p = strconv.FormatFloat(float64(v), 'f', 2, 32)
+		case float64:
+			p = strconv.FormatFloat(v, 'f', 2, 64)
+		case string:
+			p = v
+		case []byte:
+			p = string(v)
+		case []rune:
+			p = string(v)
+		}
+		fmt.Fprintf(&sb, ",\"%s\"", p)
 	}
 	fmt.Fprintf(&sb, "],\"request_id\":%d}", nextReqID)
+	Log("mpv.Execute: send: %s", sb.String())
 
 	// add reply channel
 	ch := make(chan Reply, 1)
