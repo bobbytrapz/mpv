@@ -146,8 +146,8 @@ sub-use-margins
 ass-force-margins
 ass-vsfilter-aspect-compat
 ass-style-override
-vf
-af
+# vf
+# af
 video-rotate
 ab-loop-a
 ab-loop-b

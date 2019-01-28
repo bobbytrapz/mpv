@@ -1,5 +1,7 @@
 # https://mpv.io/manual/master/#list-of-input-commands
 ignore
+seek
+revert-seek
 frame-step
 frame-back-step
 set
@@ -38,3 +40,22 @@ audio-add
 audio-remove
 audio-reload
 rescan-external-files
+af
+vf
+cycle-values
+enable-section
+disable-section
+define-section
+overlay-add
+overlay-remove
+script-message
+script-message-to
+script-binding
+ab-loop
+drop-buffers
+screenshot-raw
+vf-command
+af-command
+apply-profile
+load-script
+change-list
