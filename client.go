@@ -12,7 +12,6 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 )
 
@@ -92,9 +91,7 @@ func newClient(ctx context.Context, sockfn string, newProcess bool, flags ...str
 	if newProcess {
 		// run mpv
 		cmd = exec.Command("mpv", flags...)
-		cmd.SysProcAttr = &syscall.SysProcAttr{
-			Setpgid: true,
-		}
+		cmd = procOptions(cmd)
 		err = cmd.Start()
 		if err != nil {
 			err = fmt.Errorf("mpv.newClient: could not start mpv: %s", err)
