@@ -1,0 +1,17 @@
+# https://mpv.io/manual/stable/#list-of-events
+start-file
+end-file
+file-loaded
+seek
+playback-restart
+idle
+tick
+shutdown
+log-message
+get-property-reply
+set-property-reply
+command-reply
+client-message
+video-reconfig
+audio-reconfig
+# deprecated: tracks-changed, track-switched, pause, unpause, metadata-update, chapter-change
