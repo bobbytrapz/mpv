@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"os/exec"
@@ -91,7 +90,7 @@ func newClient(ctx context.Context, sockfn string, newProcess bool, flags ...str
 	var cmd *exec.Cmd
 	if newProcess {
 		// run mpv
-		cmd = exec.Command("mpv", flags...)
+		cmd = exec.CommandContext(ctx, "mpv", flags...)
 		cmd = procOptions(cmd)
 		err = cmd.Start()
 		if err != nil {
@@ -137,11 +136,10 @@ found:
 		ipc:  bufio.NewReadWriter(bufio.NewReader(conn), bufio.NewWriter(conn)),
 	}
 
-	// kill when canceled
 	go func() {
 		<-ctx.Done()
 		Log("mpv.Client: %s", ctx.Err())
-		client.Kill()
+		client.Close()
 	}()
 
 	// read replies and dispatch through channels waiting for replies
@@ -163,11 +161,8 @@ found:
 			// wait for reply
 			data, err := client.ipc.ReadBytes('\n')
 			if err != nil {
-				if err == io.EOF {
-					return
-				}
 				Log("mpv.Client: recv: %s", err)
-				continue
+				return
 			}
 
 			var reply Reply
@@ -199,10 +194,11 @@ found:
 // WaitForExit is how long we should wait for mpv to close
 var WaitForExit = 2 * time.Second
 
-// Wait for mpv to close
-func (c *Client) Wait() error {
+// Close mpv client
+func (c *Client) Close() error {
 	done := make(chan error, 1)
 	go func() {
+		c.conn.Close()
 		wg.Wait()
 		if c.cmd == nil {
 			done <- nil

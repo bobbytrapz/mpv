@@ -27,7 +27,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer client.Wait()
+	defer client.Close()
 
 	// use client
 	go func() {
