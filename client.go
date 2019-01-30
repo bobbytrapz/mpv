@@ -72,7 +72,7 @@ const WaitForOpen = 5 * time.Second
 // NewClient starts an mpv instance and establishes a connection to it over a unix socket
 // the socket is removed if it already exists
 func NewClient(ctx context.Context, sockfn string) (client *Client, err error) {
-	return NewClientWithFlags(ctx, sockfn, true, "--idle=yes", fmt.Sprintf("--input-unix-socket=%s", sockfn))
+	return NewClientWithFlags(ctx, sockfn, true, "--idle=yes")
 }
 
 // NewClientWithFlags starts and mpv with custom flags
@@ -89,6 +89,8 @@ func NewClientConnect(ctx context.Context, sockfn string) (client *Client, err e
 func newClient(ctx context.Context, sockfn string, newProcess bool, flags ...string) (client *Client, err error) {
 	var cmd *exec.Cmd
 	if newProcess {
+		// add to flags
+		flags = append(flags, fmt.Sprintf("--input-unix-socket=%s", sockfn))
 		// run mpv
 		cmd = exec.CommandContext(ctx, "mpv", flags...)
 		cmd = procOptions(cmd)
