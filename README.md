@@ -20,11 +20,9 @@ if err != nil {
 defer client.Close()
 
 // use client to send commands to mpv
-go func() {
-	if v, err := client.Version(); err == nil {
-		fmt.Println("version:", v)
-	}
-	// here we stop after we are done with mpv
-	cancel()
-}()
+if v, err := client.Version(); err == nil {
+	fmt.Println("version:", v)
+}
+// here we stop after we are done with mpv
+cancel()
 ```
