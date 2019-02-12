@@ -232,7 +232,7 @@ func (c *Client) Kill() error {
 func (c *Client) Execute(name string, params ...interface{}) (chan Reply, error) {
 	// build command
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("{\"command\":[\"%s\"", name))
+	sb.WriteString(fmt.Sprintf(`{"command":["%s"`, name))
 	for _, param := range params {
 		var p string
 		switch v := param.(type) {
@@ -255,9 +255,9 @@ func (c *Client) Execute(name string, params ...interface{}) (chan Reply, error)
 		case []rune:
 			p = string(v)
 		}
-		fmt.Fprintf(&sb, ",\"%s\"", p)
+		fmt.Fprintf(&sb, `,"%s"`, p)
 	}
-	fmt.Fprintf(&sb, "],\"request_id\":%d}", nextReqID)
+	fmt.Fprintf(&sb, `],"request_id":%d}`, nextReqID)
 	Log("mpv.Execute: send: %s", sb.String())
 
 	// add reply channel
