@@ -232,7 +232,7 @@ func (c *Client) Kill() error {
 func (c *Client) Execute(name string, params ...interface{}) (chan Reply, error) {
 	// build command
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf(`{"command":["%s"`, name))
+	fmt.Fprintf(&sb, `{"command":["%s"`, name)
 	for _, param := range params {
 		var p string
 		switch v := param.(type) {
